@@ -309,10 +309,9 @@ class Call:
                 stream=stream,
                 config=call_config,
             )
-        except NoActiveGroupCall:
+        except Exception:
+            LOGGER(__name__).error("\n", exc_info=True)
             await self.join_chat(chat_id)
-            await asyncio.sleep(2)
-            
             try:
                 await assistant.play(
                     chat_id,
@@ -320,9 +319,15 @@ class Call:
                     config=call_config,
                 )
             except Exception as e:
+                LOGGER(__name__).error("\n", exc_info=True)
                 raise AssistantErr(
                     "**No Active Voice Chat Found**\n\nPlease make sure group's voice chat is enabled. If already enabled, please end it and start fresh voice chat again and if the problem continues, try /restart"
                 )
+
+        except NoActiveGroupCall:
+            raise AssistantErr(
+                "**No Active Voice Chat Found**\n\nPlease make sure group's voice chat is enabled. If already enabled, please end it and start fresh voice chat again and if the problem continues, try /restart"
+            )
         except TelegramServerError:
             raise AssistantErr(
                 "**TELEGRAM SERVER ERROR**\n\nPlease restart Your voicechat."
