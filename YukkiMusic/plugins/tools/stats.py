@@ -14,6 +14,7 @@ import psutil
 from telethon import Button, events
 from telethon.errors import MessageIdInvalidError
 from telethon.tl.types import DocumentAttributeFilename, InputMediaPhoto
+from pytgcalls.__version__ import __version__ as pytgver
 
 import config
 from YukkiMusic import tbot
@@ -283,6 +284,7 @@ async def handle_top_overall(event):
 **CPU Frequency:** {cpu_freq}
 
 **Python Version:** {pyver.split()[0]}
+**Py-tgcalls Version:** {pytgver}
 **Total Storage:** {total} GiB
 **Used Storage:** {used} GiB
 **Free Storage:** {free} GiB
@@ -352,9 +354,3 @@ async def handle_stats_buttons(event):
             file=config.STATS_IMG_URL,
             buttons=stats_buttons(_, event.sender_id in SUDOERS)
         )
-
-
-@tbot.on(events.CallbackQuery(pattern="close", func=~BANNED_USERS))
-@language
-async def close_handler(event):
-    await event.delete()
